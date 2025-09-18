@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.expensetrack.data.entity.Category
+import com.example.expensetrack.ui.components.CompactCategoryRow
 import com.example.expensetrack.viewmodel.CategoryViewModel
 
 @Composable
@@ -39,8 +40,10 @@ fun CategoryManagerScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 item { Spacer(Modifier.height(4.dp)) }
                 items(categories, key = { it.id }) { cat ->
-                    CategoryRow(
+                    val parentName = categories.find { it.id == cat.parentId }?.name
+                    CompactCategoryRow (
                         category = cat,
+                        parentCategoryName = parentName,
                         onEdit = { viewModel.edit(cat) },
                         onDelete = { viewModel.delete(cat) }
                     )

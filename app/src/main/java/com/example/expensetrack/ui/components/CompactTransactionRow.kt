@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -32,84 +28,44 @@ fun CompactTransactionRow(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
+    Row(
+        Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Left: date, category/subcategory, account
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = date,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(Modifier.height(2.dp))
-
-                val catLine = if (subcategory.isNullOrBlank()) category else "$category • $subcategory"
-                Text(
-                    text = catLine,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(Modifier.height(2.dp))
-
-                Text(
-                    text = account,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+        Text(
+            text = date,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.weight(1.2f)
+        )
+        Text(
+            text = buildString {
+                append(account)
+                if (category.isNotBlank()) append(":$category")
+                if (!subcategory.isNullOrBlank()) append(":$subcategory")
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(2.5f)
+        )
+        Text(
+            text = (if (isCredit) "₹" else "-₹") + amount.abs().toPlainString(),
+            color = if (isCredit) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1.2f),
+            textAlign = TextAlign.End
+        )
+        Row {
+            IconButton(onClick = onEdit) {
+                Icon(Icons.Default.Edit, contentDescription = "Edit")
             }
-
-            // Right: amount + actions
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                val amountColor = if (isCredit)
-                    MaterialTheme.colorScheme.tertiary
-                else
-                    MaterialTheme.colorScheme.error
-
-                Text(
-                    text = formatCurrency(amount),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = amountColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Clip
-                )
-
-                Row {
-                    IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
-                    }
-                    IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                    }
-                }
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
         }
     }
-}
-
-private fun formatCurrency(value: BigDecimal): String {
-    val nf = NumberFormat.getCurrencyInstance(Locale.getDefault())
-    return nf.format(value)
 }

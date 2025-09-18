@@ -15,11 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.expensetrack.data.entity.Account
 import com.example.expensetrack.data.entity.AccountType
 import com.example.expensetrack.ui.components.AccountCard
 import com.example.expensetrack.viewmodel.AccountViewModel
+import com.example.expensetrack.data.entity.Category
+import com.example.expensetrack.ui.components.CompactAccountRow
 import java.math.BigDecimal
 
 @Composable
@@ -75,7 +78,7 @@ fun AccountsScreen(
                     items = accounts,
                     key = { account -> account.id }
                 ) { account ->
-                    AccountCard(
+                    CompactAccountRow (
                         account = account,
                         onClick = { onNavigateToTransactions(account.id) },
                         onEdit = { viewModel.editAccount(account) },

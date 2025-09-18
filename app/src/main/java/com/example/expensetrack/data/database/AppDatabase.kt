@@ -27,7 +27,7 @@ import com.example.expensetrack.data.SeedData
         com.example.expensetrack.data.entity.Transaction::class,
         com.example.expensetrack.data.entity.Category::class
     ],
-    version = 2, // bump from previous
+    version = 3, // bump from previous
     exportSchema = true
 )
 @TypeConverters(Converters::class, DateTimeConverters::class)
@@ -59,7 +59,7 @@ abstract class AppDatabase : RoomDatabase() {
                             }
                         }
                     })
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration() // For production, DO NOT use —write a migration.
                     .build()
                 INSTANCE = instance
                 instance

@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
             AppDatabase::class.java,
             "expense_track_database"
         )
-            // .fallbackToDestructiveMigration() // dev only
+            .fallbackToDestructiveMigration() // dev only
             .build()
     }
 
